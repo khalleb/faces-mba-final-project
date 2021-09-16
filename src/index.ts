@@ -27,17 +27,39 @@ import { pathWindowsLinux } from './lib/util';
         mkdirSync(folferNewImages);
       }
       try {
-        groupBy.forEach(file => {
+        let arrayFilter = [];
+        const qtdeGroup = 500
+        for (let k = 1; k <= qtdeGroup; k++) {
+          const filterByGroup = groupBy.filter(e => e.group === k.toString());
+          arrayFilter.push(...filterByGroup);
+        }
+        const folderQtdeImg = `${folferNewImages}-${qtdeGroup}`;
+        if (!existsSync(folderQtdeImg)) {
+          mkdirSync(folderQtdeImg);
+        }
+        arrayFilter.forEach(file => {
           const fileOld = `${folderImages}${pathWindowsLinux()}${file.image}`
-          const fileNew = `${folferNewImages}${pathWindowsLinux()}${file.group}_${file.image}`
+          const fileNew = `${folderQtdeImg}${pathWindowsLinux()}${file.group}_${file.image}`
           copyFile(fileOld, fileNew, (err) => {
             if (err) {
               console.log(`Erro ao copiar imagem: ` + err);
-            }else {
+            } else {
               console.log(`${file.image} - Copiado`);
             }
           });
-        });
+        })
+        console.log(arrayFilter.length);
+        // groupBy.forEach(file => {
+        //   const fileOld = `${folderImages}${pathWindowsLinux()}${file.image}`
+        //   const fileNew = `${folferNewImages}${pathWindowsLinux()}${file.group}_${file.image}`
+        //   copyFile(fileOld, fileNew, (err) => {
+        //     if (err) {
+        //       console.log(`Erro ao copiar imagem: ` + err);
+        //     }else {
+        //       console.log(`${file.image} - Copiado`);
+        //     }
+        //   });
+        // });
         console.log('Arquivos copiados');
       } catch (error) {
         console.log('erro ao copiar o arquivo' + error);
